@@ -5,6 +5,7 @@ export class CarService {
   $createCar(make: string, model: string, year: number) {
     const newCar = { id: this.nextId++, make, model, year };
     this.cars.push(newCar);
+    console.log('Car created:', newCar);
     return newCar;
   }
 
@@ -12,6 +13,7 @@ export class CarService {
     const carIndex = this.cars.findIndex(car => car.id === id);
     if (carIndex === -1) return null;
     this.cars[carIndex] = { id, make, model, year };
+    console.log('Car updated:', this.cars[carIndex]);
     return this.cars[carIndex];
   }
 
@@ -19,6 +21,7 @@ export class CarService {
     const carIndex = this.cars.findIndex(car => car.id === id);
     if (carIndex === -1) return null;
     const [deletedCar] = this.cars.splice(carIndex, 1);
+    console.log('Car deleted:', deletedCar);
     return deletedCar;
   }
 
