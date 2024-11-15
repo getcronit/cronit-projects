@@ -6,19 +6,19 @@ export const graphql = {
     hello: () => {
       return 'Hello, world!';
     },
-    users: () => {
-      return userService.listUsers();
+    users: async () => {
+      return await userService.listUsers();
     }
   },
   Mutation: {
-    createUser: (name: string, email: string) => {
-      return userService.$createUser(name, email);
+    createUser: async (name: string, email: string) => {
+      return await userService.$createUser(name, email);
     },
-    updateUser: (id: number, name: string, email: string) => {
-      return userService.$updateUser(id, name, email);
+    updateUser: async (id: number, name: string, email: string) => {
+      return await userService.$updateUser(id, name, email);
     },
-    deleteUser: (id: number) => {
-      return userService.$deleteUser(id);
+    deleteUser: async (id: number) => {
+      return await userService.$deleteUser(id);
     }
   }
 };
