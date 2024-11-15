@@ -1,43 +1,49 @@
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
 class UserService {
-  private users: { id: number; name: string; email: string }[] = [];
+  private users: User[] = [];
   private nextId: number = 1;
 
-  listUsers() {
+  listUsers(): User[] {
     return this.users;
   }
 
-  createUser(name: string, email: string) {
-    const newUser = { id: this.nextId++, name, email };
+  $createUser(name: string, email: string): User {
+    const newUser: User = { id: this.nextId++, name, email };
     this.users.push(newUser);
     return newUser;
   }
 
-  updateUser(id: number, name: string, email: string) {
+  $updateUser(id: number, name: string, email: string): User {
     const user = this.users.find(user => user.id === id);
-    if (!user) throw new Error('User not found');
+    if (!user) throw new Error(`User with ID ${id} not found`);
     user.name = name;
     user.email = email;
     return user;
   }
 
-  deleteUser(id: number) {
+  $deleteUser(id: number): User {
     const userIndex = this.users.findIndex(user => user.id === id);
-    if (userIndex === -1) throw new Error('User not found');
-    const deletedUser = this.users.splice(userIndex, 1);
-    return deletedUser[0];
+    if (userIndex === -1) throw new Error(`User with ID ${id} not found`);
+    const [deletedUser] = this.users.splice(userIndex, 1);
+    return deletedUser;
   }
 
-  findUserByEmail(email: string) {
+  findUserByEmail(email: string): User | undefined {
     return this.users.find(user => user.email === email);
   }
 
-  userExists(id: number) {
+  userExists(id: number): boolean {
     return this.users.some(user => user.id === id);
   }
 
-  getUserById(id: number) {
+  byId(id: number): User {
     const user = this.users.find(user => user.id === id);
-    if (!user) throw new Error('User not found');
+    if (!user) throw new Error(`User with ID ${id} not found`);
     return user;
   }
 }
