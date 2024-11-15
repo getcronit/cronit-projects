@@ -26,6 +26,20 @@ class UserService {
     const deletedUser = this.users.splice(userIndex, 1);
     return deletedUser[0];
   }
+
+  findUserByEmail(email: string) {
+    return this.users.find(user => user.email === email);
+  }
+
+  userExists(id: number) {
+    return this.users.some(user => user.id === id);
+  }
+
+  getUserById(id: number) {
+    const user = this.users.find(user => user.id === id);
+    if (!user) throw new Error('User not found');
+    return user;
+  }
 }
 
 export default new UserService();
