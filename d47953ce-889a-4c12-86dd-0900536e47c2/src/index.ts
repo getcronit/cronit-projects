@@ -4,10 +4,12 @@ import carService from './carService';
 import { PlaneService } from './planeService';
 import { AirportService } from './airportService';
 import { PilotService } from './pilotService';
+import { FlightService } from './flightService';
 
 const planeService = new PlaneService();
 const airportService = new AirportService();
 const pilotService = new PilotService();
+const flightService = new FlightService();
 
 export const graphql = {
   Query: {
@@ -46,6 +48,14 @@ export const graphql = {
     pilotById: (id: number) => {
       console.log(`PilotById query was called with id: ${id}`);
       return pilotService.findPilotById(id);
+    },
+    flights: () => {
+      console.log('Flights query was called');
+      return flightService.listFlights();
+    },
+    flightById: (id: string) => {
+      console.log(`FlightById query was called with id: ${id}`);
+      return flightService.findFlightById(id);
     }
   },
   Mutation: {
@@ -104,6 +114,18 @@ export const graphql = {
     deletePilot: (id: number) => {
       console.log(`DeletePilot mutation was called with id: ${id}`);
       return pilotService.$removePilot(id);
+    },
+    createFlight: (id: string, origin: string, destination: string, duration: number) => {
+      console.log(`CreateFlight mutation was called with id: ${id}, origin: ${origin}, destination: ${destination}, duration: ${duration}`);
+      flightService.addFlight({ id, origin, destination, duration });
+    },
+    updateFlight: (id: string, updatedInfo: Partial<{ origin: string; destination: string; duration: number }>) => {
+      console.log(`UpdateFlight mutation was called with id: ${id}`);
+      flightService.$updateFlight(id, updatedInfo);
+    },
+    deleteFlight: (id: string) => {
+      console.log(`DeleteFlight mutation was called with id: ${id}`);
+      flightService.$deleteFlight(id);
     }
   }
 };
