@@ -13,8 +13,8 @@ export const graphql = {
       console.log('Hello query was called');
       return 'Hello, world!';
     },
-    listUsers: () => {
-      return userService.listUsers();
+    listUsers: async () => {
+      return await userService.listUsers();
     },
     listCars: () => {
       return carService.listCars();
@@ -27,8 +27,8 @@ export const graphql = {
     }
   },
   Mutation: {
-    addUser: (name: string) => {
-      return userService.addUser(name);
+    addUser: async (name: string, email: string) => {
+      return await userService.addUser(name, email);
     },
     addCar: (car: string) => {
       return carService.$addCar(car);
