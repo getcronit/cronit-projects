@@ -1,3 +1,5 @@
+import { PrismaClient } from '@prisma/client';
+
 interface User {
   id: number;
   name: string;
@@ -5,15 +7,18 @@ interface User {
 }
 
 class UserService {
-  private users: User[] = [];
-  private nextId: number = 1;
+  private prisma: PrismaClient;
+
+  constructor() {
+    this.prisma = new PrismaClient();
+  }
 
   /**
    * Retrieves the list of all users.
    * @returns An array of User objects.
    */
-  listUsers(): User[] {
-    return this.users;
+  async listUsers(): Promise<User[]> {
+    return this.prisma.user.findMany();
   }
 
   /**
@@ -22,10 +27,13 @@ class UserService {
    * @param email - The email of the user.
    * @returns The newly created User object.
    */
-  $createUser(name: string, email: string): User {
-    const newUser: User = { id: this.nextId++, name, email };
-    this.users.push(newUser);
-    return newUser;
+  async $createUser(name: string, email: string): Promise<User> {
+    return this.prisma.user.create({
+      data: {
+        name,
+        email,
+      },
+    });
   }
 
   /**
@@ -36,12 +44,11 @@ class UserService {
    * @returns The updated User object.
    * @throws Will throw an error if the user with the given ID is not found.
    */
-  $updateUser(id: number, name: string, email: string): User {
-    const user = this.users.find(user => user.id === id);
-    if (!user) throw new Error(`User with ID ${id} not found`);
-    user.name = name;
-    user.email = email;
-    return user;
+  async $updateUser(id: number, name: string, email: string): Promise<User> {
+    return this.prisma.user.update({
+      where: { id },
+      data: { name, email },
+    });
   }
 
   /**
@@ -50,11 +57,10 @@ class UserService {
    * @returns The deleted User object.
    * @throws Will throw an error if the user with the given ID is not found.
    */
-  $deleteUser(id: number): User {
-    const userIndex = this.users.findIndex(user => user.id === id);
-    if (userIndex === -1) throw new Error(`User with ID ${id} not found`);
-    const [deletedUser] = this.users.splice(userIndex, 1);
-    return deletedUser;
+  async $deleteUser(id: number): Promise<User> {
+    return this.prisma.user.delete({
+      where: { id },
+    });
   }
 
   /**
@@ -62,8 +68,10 @@ class UserService {
    * @param email - The email of the user to find.
    * @returns The User object if found, otherwise undefined.
    */
-  findUserByEmail(email: string): User | undefined {
-    return this.users.find(user => user.email === email);
+  async findUserByEmail(email: string): Promise<User | null> {
+    return this.prisma.user.findUnique({
+      where: { email },
+    });
   }
 
   /**
@@ -71,8 +79,11 @@ class UserService {
    * @param id - The ID of the user to check.
    * @returns True if the user exists, otherwise false.
    */
-  userExists(id: number): boolean {
-    return this.users.some(user => user.id === id);
+  async userExists(id: number): Promise<boolean> {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
+    return !!user;
   }
 
   /**
@@ -81,8 +92,10 @@ class UserService {
    * @returns The User object.
    * @throws Will throw an error if the user with the given ID is not found.
    */
-  byId(id: number): User {
-    const user = this.users.find(user => user.id === id);
+  async byId(id: number): Promise<User> {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
     if (!user) throw new Error(`User with ID ${id} not found`);
     return user;
   }
