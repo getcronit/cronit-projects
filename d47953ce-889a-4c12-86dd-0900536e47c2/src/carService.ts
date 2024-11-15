@@ -1,9 +1,9 @@
-interface Car {
+type Car = {
   id: number;
   make: string;
   model: string;
   year: number;
-}
+};
 
 class CarService {
   private cars: Car[] = [];
