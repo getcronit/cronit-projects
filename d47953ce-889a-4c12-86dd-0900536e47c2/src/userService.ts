@@ -1,13 +1,19 @@
-export class UserService {
-  private users: { id: number; name: string }[] = [];
+import { PrismaClient } from '@prisma/client';
 
-  addUser(name: string): { id: number; name: string } {
-    const newUser = { id: this.users.length + 1, name };
-    this.users.push(newUser);
-    return newUser;
+export class UserService {
+  private prisma: PrismaClient;
+
+  constructor() {
+    this.prisma = new PrismaClient();
   }
 
-  listUsers(): { id: number; name: string }[] {
-    return this.users;
+  async addUser(name: string, email: string) {
+    return await this.prisma.user.create({
+      data: { name, email },
+    });
+  }
+
+  async listUsers() {
+    return await this.prisma.user.findMany();
   }
 }
