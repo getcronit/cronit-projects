@@ -2,8 +2,10 @@ import { app } from '@getcronit/pylon';
 import userService from './userService';
 import carService from './carService';
 import { PlaneService } from './planeService';
+import { AirportService } from './airportService';
 
 const planeService = new PlaneService();
+const airportService = new AirportService();
 
 export const graphql = {
   Query: {
@@ -26,6 +28,14 @@ export const graphql = {
     planeById: (id: string) => {
       console.log(`PlaneById query was called with id: ${id}`);
       return planeService.findPlaneById(id);
+    },
+    airports: () => {
+      console.log('Airports query was called');
+      return airportService.listAirports();
+    },
+    airportById: (id: number) => {
+      console.log(`AirportById query was called with id: ${id}`);
+      return airportService.findAirportById(id);
     }
   },
   Mutation: {
@@ -64,6 +74,14 @@ export const graphql = {
     deletePlane: (id: string) => {
       console.log(`DeletePlane mutation was called with id: ${id}`);
       planeService.$removePlane(id);
+    },
+    createAirport: (id: number, name: string, location: string) => {
+      console.log(`CreateAirport mutation was called with id: ${id}, name: ${name}, location: ${location}`);
+      airportService.addAirport(id, name, location);
+    },
+    deleteAirport: (id: number) => {
+      console.log(`DeleteAirport mutation was called with id: ${id}`);
+      return airportService.$removeAirport(id);
     }
   }
 };
