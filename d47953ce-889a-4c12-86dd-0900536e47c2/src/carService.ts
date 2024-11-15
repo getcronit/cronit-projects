@@ -1,9 +1,9 @@
-type Car = {
+interface Car {
   id: number;
   make: string;
   model: string;
   year: number;
-};
+}
 
 class CarService {
   private cars: Car[] = [];
@@ -20,17 +20,23 @@ class CarService {
   }
 
   $updateCar(id: number, make: string, model: string, year: number): Car | null {
-    const carIndex = this.cars.findIndex(car => car.id === id);
-    if (carIndex === -1) return null;
-    this.cars[carIndex] = { id, make, model, year };
-    return this.cars[carIndex];
+    const car = this.cars.find(car => car.id === id);
+    if (car) {
+      car.make = make;
+      car.model = model;
+      car.year = year;
+      return car;
+    }
+    return null;
   }
 
   $deleteCar(id: number): boolean {
-    const carIndex = this.cars.findIndex(car => car.id === id);
-    if (carIndex === -1) return false;
-    this.cars.splice(carIndex, 1);
-    return true;
+    const index = this.cars.findIndex(car => car.id === id);
+    if (index !== -1) {
+      this.cars.splice(index, 1);
+      return true;
+    }
+    return false;
   }
 }
 
