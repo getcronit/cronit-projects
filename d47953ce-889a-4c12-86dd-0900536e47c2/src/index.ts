@@ -5,11 +5,13 @@ import { PlaneService } from './planeService';
 import { AirportService } from './airportService';
 import { PilotService } from './pilotService';
 import { FlightService } from './flightService';
+import { ManufacturerService } from './manufacturerService';
 
 const planeService = new PlaneService();
 const airportService = new AirportService();
 const pilotService = new PilotService();
 const flightService = new FlightService();
+const manufacturerService = new ManufacturerService();
 
 export const graphql = {
   Query: {
@@ -56,6 +58,14 @@ export const graphql = {
     flightById: (id: string) => {
       console.log(`FlightById query was called with id: ${id}`);
       return flightService.findFlightById(id);
+    },
+    manufacturers: () => {
+      console.log('Manufacturers query was called');
+      return manufacturerService.listManufacturers();
+    },
+    manufacturerById: (id: number) => {
+      console.log(`ManufacturerById query was called with id: ${id}`);
+      return manufacturerService.findManufacturerById(id);
     }
   },
   Mutation: {
@@ -126,6 +136,18 @@ export const graphql = {
     deleteFlight: (id: string) => {
       console.log(`DeleteFlight mutation was called with id: ${id}`);
       flightService.$deleteFlight(id);
+    },
+    createManufacturer: (id: number, name: string) => {
+      console.log(`CreateManufacturer mutation was called with id: ${id}, name: ${name}`);
+      manufacturerService.addManufacturer(id, name);
+    },
+    updateManufacturer: (id: number, name: string) => {
+      console.log(`UpdateManufacturer mutation was called with id: ${id}, name: ${name}`);
+      return manufacturerService.$updateManufacturer(id, name);
+    },
+    deleteManufacturer: (id: number) => {
+      console.log(`DeleteManufacturer mutation was called with id: ${id}`);
+      return manufacturerService.$deleteManufacturer(id);
     }
   }
 };
