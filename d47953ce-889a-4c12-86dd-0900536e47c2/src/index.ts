@@ -12,13 +12,13 @@ export const graphql = {
   },
   Mutation: {
     createUser: (name: string, email: string) => {
-      return userService.createUser(name, email);
+      return userService.$createUser(name, email);
     },
     updateUser: (id: number, name: string, email: string) => {
-      return userService.updateUser(id, name, email);
+      return userService.$updateUser(id, name, email);
     },
     deleteUser: (id: number) => {
-      return userService.deleteUser(id);
+      return userService.$deleteUser(id);
     }
   }
 };
