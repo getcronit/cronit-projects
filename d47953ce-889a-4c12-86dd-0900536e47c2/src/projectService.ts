@@ -1,34 +1,42 @@
+import { PrismaClient } from '@prisma/client';
+
 class ProjectService {
-  private projects: { id: number; name: string; description: string }[] = [];
-  private currentId: number = 1;
+  private prisma: PrismaClient;
 
-  listProjects() {
-    return this.projects;
+  constructor() {
+    this.prisma = new PrismaClient();
   }
 
-  $createProject(name: string, description: string) {
-    const newProject = { id: this.currentId++, name, description };
-    this.projects.push(newProject);
-    return newProject;
+  async listProjects() {
+    return await this.prisma.project.findMany();
   }
 
-  $updateProject(id: number, name: string, description: string) {
-    const project = this.projects.find(p => p.id === id);
-    if (project) {
-      project.name = name;
-      project.description = description;
-      return project;
+  async $createProject(name: string, description: string) {
+    return await this.prisma.project.create({
+      data: {
+        name,
+        description,
+      },
+    });
+  }
+
+  async $updateProject(id: number, name: string, description: string) {
+    const project = await this.prisma.project.findUnique({ where: { id } });
+    if (!project) {
+      throw new Error('Project not found');
     }
-    throw new Error('Project not found');
+    return await this.prisma.project.update({
+      where: { id },
+      data: { name, description },
+    });
   }
 
-  $deleteProject(id: number) {
-    const projectIndex = this.projects.findIndex(p => p.id === id);
-    if (projectIndex !== -1) {
-      const [deletedProject] = this.projects.splice(projectIndex, 1);
-      return deletedProject;
+  async $deleteProject(id: number) {
+    const project = await this.prisma.project.findUnique({ where: { id } });
+    if (!project) {
+      throw new Error('Project not found');
     }
-    throw new Error('Project not found');
+    return await this.prisma.project.delete({ where: { id } });
   }
 }
 
