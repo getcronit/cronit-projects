@@ -1,6 +1,9 @@
 import { app } from '@getcronit/pylon';
 import userService from './userService';
 import carService from './carService';
+import { PlaneService } from './planeService';
+
+const planeService = new PlaneService();
 
 export const graphql = {
   Query: {
@@ -15,6 +18,14 @@ export const graphql = {
     cars: () => {
       console.log('Cars query was called');
       return carService.listCars();
+    },
+    planes: () => {
+      console.log('Planes query was called');
+      return planeService.listPlanes();
+    },
+    planeById: (id: string) => {
+      console.log(`PlaneById query was called with id: ${id}`);
+      return planeService.findPlaneById(id);
     }
   },
   Mutation: {
@@ -41,6 +52,18 @@ export const graphql = {
     deleteCar: (id: number) => {
       console.log(`DeleteCar mutation was called with id: ${id}`);
       return carService.$deleteCar(id);
+    },
+    createPlane: (id: string, model: string, manufacturer: string, capacity: number) => {
+      console.log(`CreatePlane mutation was called with id: ${id}, model: ${model}, manufacturer: ${manufacturer}, capacity: ${capacity}`);
+      planeService.addPlane({ id, model, manufacturer, capacity });
+    },
+    updatePlane: (id: string, updatedInfo: Partial<{ model: string; manufacturer: string; capacity: number }>) => {
+      console.log(`UpdatePlane mutation was called with id: ${id}`);
+      planeService.$updatePlane(id, updatedInfo);
+    },
+    deletePlane: (id: string) => {
+      console.log(`DeletePlane mutation was called with id: ${id}`);
+      planeService.$removePlane(id);
     }
   }
 };
