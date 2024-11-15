@@ -14,30 +14,38 @@ export const graphql = {
       return 'Hello, world!';
     },
     listUsers: async () => {
+      console.log('listUsers query was called');
       return await userService.listUsers();
     },
-    listCars: () => {
-      return carService.listCars();
+    listCars: async () => {
+      console.log('listCars query was called');
+      return await carService.listCars();
     },
-    listFlights: () => {
-      return flightService.listFlights();
+    listFlights: async () => {
+      console.log('listFlights query was called');
+      return await flightService.listFlights();
     },
-    findFlightById: (id: number) => {
-      return flightService.findFlightById(id);
+    findFlightById: async (id: number) => {
+      console.log(`findFlightById query was called with id: ${id}`);
+      return await flightService.findFlightById(id);
     }
   },
   Mutation: {
     addUser: async (name: string, email: string) => {
+      console.log(`addUser mutation was called with name: ${name}, email: ${email}`);
       return await userService.addUser(name, email);
     },
-    addCar: (car: string) => {
-      return carService.$addCar(car);
+    addCar: async (carDetails: string) => {
+      console.log(`addCar mutation was called with carDetails: ${carDetails}`);
+      return await carService.$addCar(carDetails);
     },
-    addFlight: (flight: { id: number; airline: string; destination: string; departure: string; }) => {
-      return flightService.$addFlight(flight);
+    addFlight: async (flightDetails: { id: number; airline: string; destination: string; departure: string; }) => {
+      console.log(`addFlight mutation was called with flightDetails: ${JSON.stringify(flightDetails)}`);
+      return await flightService.$addFlight(flightDetails);
     },
-    removeFlight: (id: number) => {
-      return flightService.$removeFlight(id);
+    removeFlight: async (id: number) => {
+      console.log(`removeFlight mutation was called with id: ${id}`);
+      return await flightService.$removeFlight(id);
     }
   }
 };
