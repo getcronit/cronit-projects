@@ -1,34 +1,33 @@
-// Manufacturer Service
-// This service will handle operations related to manufacturers.
-
 export class ManufacturerService {
-    private manufacturers: any[] = [];
+    private manufacturers: { id: number, name: string }[] = [];
 
-    // Add a new manufacturer
-    $addManufacturer(manufacturer: any) {
-        this.manufacturers.push(manufacturer);
+    addManufacturer(id: number, name: string): void {
+        this.manufacturers.push({ id, name });
     }
 
-    // Retrieve all manufacturers
-    allManufacturers() {
+    listManufacturers(): { id: number, name: string }[] {
         return this.manufacturers;
     }
 
-    // Find a manufacturer by ID
-    findManufacturerById(id: string) {
+    findManufacturerById(id: number): { id: number, name: string } | undefined {
         return this.manufacturers.find(manufacturer => manufacturer.id === id);
     }
 
-    // Update a manufacturer by ID
-    $updateManufacturer(id: string, updatedInfo: any) {
-        const manufacturerIndex = this.manufacturers.findIndex(manufacturer => manufacturer.id === id);
-        if (manufacturerIndex !== -1) {
-            this.manufacturers[manufacturerIndex] = { ...this.manufacturers[manufacturerIndex], ...updatedInfo };
+    $updateManufacturer(id: number, name: string): boolean {
+        const manufacturer = this.findManufacturerById(id);
+        if (manufacturer) {
+            manufacturer.name = name;
+            return true;
         }
+        return false;
     }
 
-    // Delete a manufacturer by ID
-    $deleteManufacturer(id: string) {
-        this.manufacturers = this.manufacturers.filter(manufacturer => manufacturer.id !== id);
+    $deleteManufacturer(id: number): boolean {
+        const index = this.manufacturers.findIndex(manufacturer => manufacturer.id === id);
+        if (index !== -1) {
+            this.manufacturers.splice(index, 1);
+            return true;
+        }
+        return false;
     }
 }
